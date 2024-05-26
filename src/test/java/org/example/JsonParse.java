@@ -113,7 +113,7 @@ public class JsonParse {
         String jsonStringAS = "{ \"responseId\":\"AUTOMATION1\", \"services\":[ \"DIGITIZATION\" ], \"decision\":\"REQUIRE_ADDITIONAL_AUTHENTICATION\", \"cvcResponse\":\"MATCH\", \"tokenRequestorId\":\"50110030273\" }";
         String jsonStringDAC = "{ \"responseId\":\"AUTOMATION1\" }";
 
-        String fieldsRequiredString = "services,responseId, activationMethods,  services,decision,cvcResponse   ,tokenRequestorId";
+        String fieldsRequiredString = "responseId,services,decision,cvcResponse,tokenRequestorId,activationMethods";
 
         String fieldsExpectedStringRAM = "AUTOMATION1, [DIGITIZATION], REQUIRE_ADDITIONAL_AUTHENTICATION, MATCH, 50110030273, [CARDHOLDER_TO_CALL_MANNED_NUMBER, TEXT_TO_CARDHOLDER_NUMBER]";
         String fieldsExpectedStringAS = "AUTOMATION1, [DIGITIZATION], REQUIRE_ADDITIONAL_AUTHENTICATION, MATCH, 50110030273";
