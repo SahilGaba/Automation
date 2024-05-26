@@ -68,15 +68,20 @@ public class JsonParse {
     public void actualVSmatch(List<String> actualList, List<String> fieldsExpectedStringList) {
         //List<String> temp1 = new ArrayList<>(actualList);
         //List<String> temp2 = new ArrayList<>(fieldsExpectedStringList);
+        boolean flag=true;
 
         for (String item : fieldsExpectedStringList) {
-            if (actualList.contains(item)) {
-                System.out.println("Yes=" + item);
-            } else {
-                System.out.println("No=" + item);
+            if (!actualList.contains(item)) {
+                System.out.println(item);
+                flag=false;
                 break;
             }
         }
+        if (!flag){
+            System.out.println("Not Matched!");
+        }
+        else
+            System.out.println("Matched!");
     }
 
     @Test
