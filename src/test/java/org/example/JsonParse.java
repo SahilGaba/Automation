@@ -99,7 +99,7 @@ public class JsonParse {
 
         String jsonStringAS = "{ \"responseId\":\"AUTOMATION1\", \"services\":[ \"DIGITIZATION\" ], \"decision\":\"REQUIRE_ADDITIONAL_AUTHENTICATION\", \"cvcResponse\":\"MATCH\", \"tokenRequestorId\":\"50110030273\" }";
         String jsonStringDAC = "{ \"responseId\":\"AUTOMATION1\" }";
-        String jsonStringError = "{ \"errorCode\":\"INVALID_JSON\", \"errorDescription\":\"Invalid JSON\" }";
+        String jsonStringError = "{ \"errorCode\":\"\", \"errorDescription\":\"Invalid JSON\" }";
 
         String fieldsRequiredString = "errorCode,errorDescription,responseId,services,decision,cvcResponse,tokenRequestorId,activationMethods";
 
@@ -153,6 +153,7 @@ public class JsonParse {
         String decision = response.getDecision();
         String cvcResponse = response.getCvcResponse();
         String tokenRequestorId = response.getTokenRequestorId();
+        List<ActivationMethod> activationMethods = response.getActivationMethods();
         String errorCode = response.getErrorCode();
         String errorDescription = response.getErrorDescription();
 
@@ -200,7 +201,6 @@ public class JsonParse {
                 }
             }
 
-            List<ActivationMethod> activationMethods = response.getActivationMethods();
             if (item.equalsIgnoreCase("activationMethods")) {
                 if (activationMethods == null) {
                     actualList.add(null);
