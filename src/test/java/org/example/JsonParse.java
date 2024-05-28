@@ -33,13 +33,22 @@ class Response {
         return activationMethods;
     }
 
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+
     private String responseId;
     private List<String> services;
     private String decision;
     private String cvcResponse;
     private String tokenRequestorId;
     private List<ActivationMethod> activationMethods;
-
+    private String errorCode;
+    private String errorDescription;
 }
 
 class ActivationMethod {
@@ -68,56 +77,36 @@ public class JsonParse {
     public void actualVSmatch(List<String> actualList, List<String> fieldsExpectedStringList) {
         //List<String> temp1 = new ArrayList<>(actualList);
         //List<String> temp2 = new ArrayList<>(fieldsExpectedStringList);
-        boolean flag=true;
+        boolean flag = true;
 
         for (String item : fieldsExpectedStringList) {
             if (!actualList.contains(item)) {
                 System.out.println(item);
-                flag=false;
+                flag = false;
                 break;
             }
         }
-        if (!flag){
+        if (!flag) {
             System.out.println("Not Matched!");
-        }
-        else
-            System.out.println("Matched!");
+        } else System.out.println("Matched!");
     }
 
     @Test
     public void jsonParse() throws JsonProcessingException {
         // Assuming you have the Jackson ObjectMapper dependency added
 
-        String jsonStringRAM = "{\n" +
-                "   \"responseId\": \"AUTOMATION1\",\n" +
-                "   \"services\": [\"DIGITIZATION\"],\n" +
-                "   \"decision\": \"REQUIRE_ADDITIONAL_AUTHENTICATION\",\n" +
-                "   \"cvcResponse\": \"MATCH\",\n" +
-                "   \"tokenRequestorId\": \"50110030273\",\n" +
-                "   \"activationMethods\":    [\n" +
-                "            {\n" +
-                "         \"type\": \"CARDHOLDER_TO_USE_MOBILE_APP\",\n" +
-                "         \"value\": \"Royal Bank Of Scotland\"\n" +
-                "      },\n" +
-                "            {\n" +
-                "         \"type\": \"TEXT_TO_CARDHOLDER_NUMBER\",\n" +
-                "         \"value\": \"*******6995\"\n" +
-                "      },\n" +
-                "            {\n" +
-                "         \"type\": \"CARDHOLDER_TO_CALL_MANNED_NUMBER\",\n" +
-                "         \"value\": \"0345 307 3336\"\n" +
-                "      }\n" +
-                "   ]\n" +
-                "}";
+        String jsonStringRAM = "{\n" + "   \"responseId\": \"AUTOMATION1\",\n" + "   \"services\": [\"DIGITIZATION\"],\n" + "   \"decision\": \"REQUIRE_ADDITIONAL_AUTHENTICATION\",\n" + "   \"cvcResponse\": \"MATCH\",\n" + "   \"tokenRequestorId\": \"50110030273\",\n" + "   \"activationMethods\":    [\n" + "            {\n" + "         \"type\": \"CARDHOLDER_TO_USE_MOBILE_APP\",\n" + "         \"value\": \"Royal Bank Of Scotland\"\n" + "      },\n" + "            {\n" + "         \"type\": \"TEXT_TO_CARDHOLDER_NUMBER\",\n" + "         \"value\": \"*******6995\"\n" + "      },\n" + "            {\n" + "         \"type\": \"CARDHOLDER_TO_CALL_MANNED_NUMBER\",\n" + "         \"value\": \"0345 307 3336\"\n" + "      }\n" + "   ]\n" + "}";
 
         String jsonStringAS = "{ \"responseId\":\"AUTOMATION1\", \"services\":[ \"DIGITIZATION\" ], \"decision\":\"REQUIRE_ADDITIONAL_AUTHENTICATION\", \"cvcResponse\":\"MATCH\", \"tokenRequestorId\":\"50110030273\" }";
         String jsonStringDAC = "{ \"responseId\":\"AUTOMATION1\" }";
+        String jsonStringError = "{ \"errorCode\":\"INVALID_JSON\", \"errorDescription\":\"Invalid JSON\" }";
 
-        String fieldsRequiredString = "responseId,services,decision,cvcResponse,tokenRequestorId,activationMethods";
+        String fieldsRequiredString = "errorCode,errorDescription,responseId,services,decision,cvcResponse,tokenRequestorId,activationMethods";
 
         String fieldsExpectedStringRAM = "AUTOMATION1, [DIGITIZATION], REQUIRE_ADDITIONAL_AUTHENTICATION, MATCH, 50110030273, [CARDHOLDER_TO_CALL_MANNED_NUMBER, TEXT_TO_CARDHOLDER_NUMBER]";
         String fieldsExpectedStringAS = "AUTOMATION1, [DIGITIZATION], REQUIRE_ADDITIONAL_AUTHENTICATION, MATCH, 50110030273";
         String fieldsExpectedStringDAC = "AUTOMATION1";
+        String fieldsExpectedStringError = "INVALID_JSON,Invalid JSON";
 
         String[] fieldsRequiredStringArray = fieldsRequiredString.split("\\s*,\\s*");
 
@@ -131,10 +120,10 @@ public class JsonParse {
         List<String> fieldsExpectedStringList = new ArrayList<>();
         StringBuffer sb = new StringBuffer(); //fieldsExpectedStringArray
 
-        String[] fieldsExpectedStringArray = fieldsExpectedStringAS.split("\\[");
+        String[] fieldsExpectedStringArray = fieldsExpectedStringError.split("\\[");
 
-        if (fieldsExpectedStringArray.length == 1 && !fieldsExpectedStringAS.contains(",")) {
-            fieldsExpectedStringList.add(fieldsExpectedStringAS);
+        if (fieldsExpectedStringArray.length == 1 && !fieldsExpectedStringError.contains(",")) {
+            fieldsExpectedStringList.add(fieldsExpectedStringError);
         } else {//if (fieldsExpectedStringArray.length>1) {
             for (String s : fieldsExpectedStringArray) {
                 String temp;
@@ -154,7 +143,7 @@ public class JsonParse {
         System.out.println("fieldsExpectedStringList: " + fieldsExpectedStringList.size() + " : " + fieldsExpectedStringList);
 
         ObjectMapper mapper = new ObjectMapper();
-        Response response = mapper.readValue(jsonStringAS, Response.class);
+        Response response = mapper.readValue(jsonStringError, Response.class);
 
         List<String> actualList = new ArrayList<>();
 
@@ -164,6 +153,8 @@ public class JsonParse {
         String decision = response.getDecision();
         String cvcResponse = response.getCvcResponse();
         String tokenRequestorId = response.getTokenRequestorId();
+        String errorCode = response.getErrorCode();
+        String errorDescription = response.getErrorDescription();
 
         for (String item : fieldsRequiredStringList) {
 
@@ -222,6 +213,23 @@ public class JsonParse {
                     }
                 }
             }
+
+            if (item.equalsIgnoreCase("errorCode")) {
+                if (errorCode == null) {
+                    actualList.add(null);
+                } else {
+                    actualList.add(errorCode);
+                }
+            }
+
+            if (item.equalsIgnoreCase("errorDescription")) {
+                if (errorDescription == null) {
+                    actualList.add(null);
+                } else {
+                    actualList.add(errorDescription);
+                }
+            }
+
         }
 
         System.out.println("actualList: " + actualList.size() + " : " + actualList);
