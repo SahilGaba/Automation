@@ -1,6 +1,6 @@
-package org.example;
+package ll;
 
-public class DoublyLinkedList {
+public class LinkedList {
 
     private Node head;
     private Node tail;
@@ -9,14 +9,13 @@ public class DoublyLinkedList {
     class Node {
         int value;
         Node next;
-        Node prev;
 
         Node(int value) {
             this.value = value;
         }
     }
 
-    public DoublyLinkedList(int value) {
+    public LinkedList(int value) {
         Node newNode = new Node(value);
         head = newNode;
         tail = newNode;
@@ -30,7 +29,6 @@ public class DoublyLinkedList {
             tail = newNode;
         } else {
             tail.next = newNode;
-            newNode.prev = tail;
             tail = newNode;
         }
         length++;
@@ -40,16 +38,19 @@ public class DoublyLinkedList {
         if (length == 0) {
             return null;
         }
-        Node removedNode = tail;
-        if (length == 1) {
+        Node temp = head;
+        Node removedNode = head;
+        while (removedNode.next != null) {
+            temp = removedNode;
+            removedNode = removedNode.next;
+        }
+        tail = temp;
+        tail.next = null;
+        length--;
+        if (length == 0) {
             head = null;
             tail = null;
-        } else {
-            tail = tail.prev;
-            tail.next = null;
-            removedNode.prev = null;
         }
-        length--;
         return removedNode;
     }
 
@@ -60,7 +61,6 @@ public class DoublyLinkedList {
             tail = newNode;
         } else {
             newNode.next = head;
-            head.prev = newNode;
             head = newNode;
         }
         length++;
@@ -71,15 +71,12 @@ public class DoublyLinkedList {
             return null;
         }
         Node removedNode = head;
-        if (length == 1) {
-            head = null;
-            tail = null;
-        } else {
-            head = head.next;
-            head.prev = null;
-            removedNode.next = null;
-        }
+        head = head.next;
+        removedNode.next = null;
         length--;
+        if (length == 0) {
+            tail = null;
+        }
         return removedNode;
     }
 
@@ -88,13 +85,8 @@ public class DoublyLinkedList {
             return null;
         }
         Node temp = head;
-        if (index < length / 2) {
-            for (int i = 0; i < index; i++)
-                temp = temp.next;
-        } else {
-            temp = tail;
-            for (int i = length - 1; i > index; i--)
-                temp = temp.prev;
+        for (int i = 0; i < index; i++) {
+            temp = temp.next;
         }
         return temp;
     }
@@ -121,12 +113,9 @@ public class DoublyLinkedList {
             return true;
         }
         Node newNode = new Node(value);
-        Node before = get(index - 1);
-        Node after = before.next;
-        newNode.prev = before;
-        newNode.next = after;
-        before.next = newNode;
-        after.prev = newNode;
+        Node temp = get(index - 1);
+        newNode.next = temp.next;
+        temp.next = newNode;
         length++;
         return true;
     }
@@ -141,29 +130,27 @@ public class DoublyLinkedList {
         if (index == length - 1) {
             return removeLast();
         }
-        Node temp = get(index);
-        temp.next.prev = temp.prev;
-        temp.prev.next = temp.next;
-        temp.next = null;
-        temp.prev = null;
+        Node temp = get(index - 1);
+        Node removedNode = get(index); //Node removedNode = temp.next;
+        temp.next = removedNode.next;
+        removedNode.next = null;
         length--;
-        return temp;
-
+        return removedNode;
     }
 
-    /* public void reverse() {
-         Node temp = head;
-         head = tail;
-         tail = temp;
-         Node before = null;
-         Node after = temp.next;
-         for (int i=0; i<length;i++){
-             after = temp.next;
-             temp.next=before;
-             before=temp;
-             temp=after;
-         }
-     }*/
+    public void reverse() {
+        Node temp = head;
+        head = tail;
+        tail = temp;
+        Node before = null;
+        Node after = temp.next;
+        for (int i=0; i<length;i++){
+            after = temp.next;
+            temp.next=before;
+            before=temp;
+            temp=after;
+        }
+    }
 
     public void printList() {
         Node temp = head;
@@ -189,7 +176,6 @@ public class DoublyLinkedList {
             printList();
         }
     }
-
 
     public Node getHead() {
         return head;

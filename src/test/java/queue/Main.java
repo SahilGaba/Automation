@@ -1,4 +1,8 @@
-package org.example;
+package queue;
+
+import dll.DoublyLinkedList;
+import ll.LinkedList;
+import stack.Stack;
 
 public class Main {
 
@@ -6,6 +10,8 @@ public class Main {
 
         LinkedList myLinkedList = new LinkedList(1);
         DoublyLinkedList myDoublyLinkedList = new DoublyLinkedList(1);
+        Stack stack = new Stack(1);
+        Queue myQueue = new Queue (7);
 
         ///////////////////////////////////////////////
 //        myLinkedList.append(2);
@@ -27,13 +33,29 @@ public class Main {
 //        //myLinkedList.printList();
 //        myLinkedList.reverse();
 //        myLinkedList.printList();
+
         ///////////////////////////////////////////////
 
-        myDoublyLinkedList.prepend(0);
-        myDoublyLinkedList.printList();
+//        myDoublyLinkedList.prepend(0);
+//        myDoublyLinkedList.printList();
+//
+//        System.out.println("\nFirst: "+myDoublyLinkedList.removeFirst().value);
+//        myDoublyLinkedList.printList();
 
-        System.out.println("\nFirst: "+myDoublyLinkedList.removeFirst().value);
-        myDoublyLinkedList.printList();
+        ///////////////////////////////////////////////
+
+//        stack.printStack();
+//        stack.push(0);
+//        stack.printStack();
+//        stack.pop();
+//        stack.printStack();
+        ///////////////////////////////////////////////
+
+        myQueue.printStack();
+        myQueue.enQueue(2);
+        myQueue.printStack();
+        myQueue.deQueue();
+        myQueue.printStack();
 
     }
 }
